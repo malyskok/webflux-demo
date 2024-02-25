@@ -1,22 +1,19 @@
 /*
- * Copyright (c) Flooid Limited 2024. All rights reserved.
- * This source code is confidential to and the copyright of Flooid Limited ("Flooid"), and must not be
- * (i) copied, shared, reproduced in whole or in part; or
- * (ii) used for any purpose other than the purpose for which it has expressly been provided by Flooid under the terms of a license agreement; or
- * (iii) given or communicated to any third party without the prior written consent of Flooid.
- * Flooid at all times reserves the right to modify the delivery and capabilities of its products and/or services.
- * "Flooid", "FlooidCore", "FlooidCommerce", "Flooid Hub", "PCMS", "Vision", "VISION Commerce Suite", "VISION OnDemand", "VISION eCommerce",
- * "VISION Engaged", "DATAFIT", "PCMS DATAFIT" and "BeanStore" are registered trademarks of Flooid.
- * All other brands and logos (that are not registered and/or unregistered trademarks of Flooid) are registered and/or
- * unregistered trademarks of their respective holders and should be treated as such.
+ * Copyright (c) 2024. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 package com.malyskok.webfluxdemo.service;
 
+import com.malyskok.webfluxdemo.dto.MultiplyRequest;
 import com.malyskok.webfluxdemo.dto.Response;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -30,9 +27,24 @@ public class ReactiveMathService {
     }
 
     public Flux<Response> doMultiplicationTable(int input) {
+        //THIS IS NOT REACTIVE!!!
+//        List<Response> list = IntStream.rangeClosed(1, input)
+//                .peek(i -> SleepUtil.sleepSeconds(1))
+//                .peek(i -> System.out.println("Math service - processing: " + i))
+//                .mapToObj(i -> new Response(i * input))
+//                .collect(Collectors.toList());
+//        return Flux.fromIterable(list);
+
         return Flux.range(1, input)
-                .doOnNext(i -> SleepUtil.sleepSeconds(1))
+                .delayElements(Duration.ofSeconds(1))
+//                .doOnNext(i -> SleepUtil.sleepSeconds(1))
                 .doOnNext(i -> System.out.println("Math service - processing: " + i))
                 .map(i -> new Response(i * input));
+    }
+
+    public Mono<Response> multiply(Mono<MultiplyRequest> request) {
+        return request
+                .map(request1 -> request1.getFirst() * request1.getSecond())
+                .map(Response::new);
     }
 }

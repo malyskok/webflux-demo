@@ -8,20 +8,13 @@
 package com.malyskok.webfluxdemo.dto;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.util.Date;
 
 @Data
 @ToString
-@NoArgsConstructor
-public class Response {
+public class InputFailedValidationResponse {
 
-    private Date date = new Date();
-    private int output;
-
-    public Response(int output) {
-        this.output = output;
-    }
+    private int errorCode;
+    private int input;
+    private String message;
 }
